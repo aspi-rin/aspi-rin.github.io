@@ -2,7 +2,7 @@
 # 基础信息
 title: "完整的 Front Matter 示例"
 date: 2025-06-13T10:00:00+08:00
-description: "这是一篇展示所有 Front Matter 配置的示例文章"
+summary: "这是一篇展示所有 Front Matter 配置的示例文章"
 draft: false
 
 # 分类和标签

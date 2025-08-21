@@ -16,7 +16,7 @@ justified_gallery:
 
 ### 单张图片
 
-![示例图片](images/test.jpg "示例图片")
+![](images/test.jpg)
 
 ### Justified 布局
 
