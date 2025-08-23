@@ -160,7 +160,7 @@ params:
   stickyHeader: true  # Set to true to enable sticky navigation bar
 
   # default color scheme
-  colorScheme: "default"
+  colorScheme: "Claude"
   themes:
     # default:
     #   name: "Default"
