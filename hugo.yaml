@@ -1,6 +1,6 @@
 baseURL: https://aspi-rin.github.io/
-languageCode: en-US
-defaultContentLanguage: en
+languageCode: zh-CN
+defaultContentLanguage: zh-cn
 defaultContentLanguageInSubdir: false
 title: 邪神ちゃん Blog
 theme: "hugo-narrow"
@@ -65,11 +65,11 @@ menus:
       weight: 30
       params:
         icon: categories
-    # - name: nav.tags
-    #   pageRef: /tags
-    #   weight: 40
-    #   params:
-    #     icon: tags
+    - name: nav.tags
+      pageRef: /tags
+      weight: 40
+      params:
+        icon: tags
     - name: nav.archives
       pageRef: /archives
       weight: 50
