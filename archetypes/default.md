@@ -13,15 +13,7 @@ tags: ["Hugo", "Front Matter", "配置"]
 cover: "cover.jpg"
 
 # 功能开关
-katex:
-  enable: true
-  delimiters:
-    - left: $$
-      right: $$
-      display: true
-    - left: $
-      right: $
-      display: false
+katex: true
 mermaid: true
 comments: true
 showLicense: true
