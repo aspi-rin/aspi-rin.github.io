@@ -15,7 +15,7 @@ showRelated: true
 lightbox:
   enabled: true
 
-justified_gallery:
+gallery:
   enabled: true
 ---
 

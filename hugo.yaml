@@ -1,9 +1,8 @@
 baseURL: https://aspi-rin.github.io/
-languageCode: zh-CN
-defaultContentLanguage: zh-cn
+languageCode: ja-JP
+defaultContentLanguage: ja
 defaultContentLanguageInSubdir: false
 title: 邪神ちゃん Blog
-theme: "hugo-narrow"
 timeZone: 'Asia/Tokyo'
 
 hasCJKLanguage: true
@@ -23,14 +22,80 @@ languages:
     languageCode: en-US
     languageName: "English"
     weight: 1
+    menus:
+      main:
+        - name: Posts
+          pageRef: /posts
+          weight: 20
+          params:
+            icon: posts
+        - name: Categories
+          pageRef: /categories
+          weight: 30
+          params:
+            icon: categories
+        - name: Tags
+          pageRef: /tags
+          weight: 40
+          params:
+            icon: tags
+        - name: Archives
+          pageRef: /archives
+          weight: 50
+          params:
+            icon: archive
   zh-cn:
     languageCode: zh-CN
     languageName: "简体中文"
     weight: 2
+    menus:
+      main:
+        - name: 文章
+          pageRef: /posts
+          weight: 20
+          params:
+            icon: posts
+        - name: 分类
+          pageRef: /categories
+          weight: 30
+          params:
+            icon: categories
+        - name: 标签
+          pageRef: /tags
+          weight: 40
+          params:
+            icon: tags
+        - name: 归档
+          pageRef: /archives
+          weight: 50
+          params:
+            icon: archive
   ja:
     languageCode: ja-JP
     languageName: "日本語"
     weight: 3
+    menus:
+      main:
+        - name: 記事
+          pageRef: /posts
+          weight: 20
+          params:
+            icon: posts
+        - name: カテゴリー
+          pageRef: /categories
+          weight: 30
+          params:
+            icon: categories
+        - name: タグ
+          pageRef: /tags
+          weight: 40
+          params:
+            icon: tags
+        - name: アーカイブ
+          pageRef: /archives
+          weight: 50
+          params:
+            icon: archive
   # fr:
   #   languageCode: fr-FR
   #   languageName: "Français"
@@ -54,29 +119,6 @@ taxonomies:
   tag: tags
 
 menus:
-  main:
-    - name: nav.posts
-      pageRef: /posts
-      weight: 20
-      params:
-        icon: posts
-    - name: nav.categories
-      pageRef: /categories
-      weight: 30
-      params:
-        icon: categories
-    - name: nav.tags
-      pageRef: /tags
-      weight: 40
-      params:
-        icon: tags
-    - name: nav.archives
-      pageRef: /archives
-      weight: 50
-      params:
-        icon: archive
-
-
   # footer menu
   footer:
     - name: About
@@ -129,17 +171,14 @@ params:
   - "/images/og-default.avif"
 
   logo:
-    image: "https://s2.loli.net/2025/08/18/TpD9dVtaLYfCR5B.jpg"  # Logo path rel to static folder, leave empty use site title and primary color
-    link: "/"                  # click to home page
-  favicon:
-    svg: "https://s2.loli.net/2025/08/18/TpD9dVtaLYfCR5B.jpg"        # SVG format favicon (recommended)
+    image: ""  # Placeholder to clear out the old root logo config
 
 
   author:
     name: "邪神ちゃん Blog"
     # title: "A Clean and Minimal Hugo Theme"
     description: "邪神ちゃんドロップキック！"
-    avatar: https://s2.loli.net/2025/08/18/TpD9dVtaLYfCR5B.jpg
+    avatar: "/avatar.jpg"
     # social:
     #   - name: "GitHub"
     #     url: "https://github.com/username"
@@ -152,12 +191,16 @@ params:
     #     icon: "email"
 
   # UI Components Control
-  showThemeSwitch: true      # Set to false to hide theme style switcher (palette icon)
-  showDarkModeSwitch: true   # Set to false to hide dark mode switcher (sun/moon icon)
-  showLanguageSwitch: true   # Set to false to hide language switcher
-
-  # Header sticky effect
-  stickyHeader: true  # Set to true to enable sticky navigation bar
+  header:
+    sticky: true
+    showThemeSwitch: true      # Set to false to hide theme style switcher (palette icon)
+    showDarkMode: true         # Set to false to hide dark mode switcher (sun/moon icon)
+    showLanguageSwitch: true   # Set to false to hide language switcher
+    logo:
+      image: "/avatar.jpg"     # Logo path rel to static folder
+      link: "/"                # click to home page
+    favicon:
+      svg: "/avatar.jpg"       # SVG format favicon (recommended)
 
   # default color scheme
   colorScheme: "Claude"
@@ -312,8 +355,8 @@ params:
     preload: true
     descPosition: bottom
 
-  # Justified Gallery
-  justified_gallery:
+  # Gallery (Smart Gallery with Justified/Masonry/Grid layouts)
+  gallery:
     enabled: false
     rowHeight: 300
     gutter: 30
@@ -322,7 +365,7 @@ params:
     resizeDebounce: 100
     rowHeightTolerance: 0.25
     maxRowsCount: 999999
-    calculateItemsHeight: false
+    defaultLayout: justified
 
 
 markup:
@@ -375,6 +418,8 @@ module:
   hugoVersion:
     extended: true
     min: 0.146.0
+  imports:
+    - path: github.com/tom2almighty/hugo-narrow
 
 caches:
   images:

@@ -1,0 +1,10 @@
+{
+ "compilerOptions": {
+  "baseUrl": ".",
+  "paths": {
+   "*": [
+    "..\\_vendor\\github.com\\tom2almighty\\hugo-narrow\\assets\\*"
+   ]
+  }
+ }
+}
