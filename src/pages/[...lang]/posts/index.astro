@@ -1,0 +1,10 @@
+---
+import PagedPostList from '@/components/PagedPostList.astro'
+import { allLocales } from '@/config'
+import { getLangFromPath, getLangRouteParam } from '@/i18n/lang'
+
+export const getStaticPaths = () => allLocales.map(lang => ({ params: { lang: getLangRouteParam(lang) } }))
+
+const lang = getLangFromPath(Astro.url.pathname)
+---
+<PagedPostList {lang} />

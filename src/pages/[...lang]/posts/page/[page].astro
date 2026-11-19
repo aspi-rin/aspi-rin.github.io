@@ -1,0 +1,18 @@
+---
+import PagedPostList from '@/components/PagedPostList.astro'
+import { allLocales } from '@/config'
+import { getLangFromPath, getLangRouteParam } from '@/i18n/lang'
+import { getPosts } from '@/utils/content'
+
+export async function getStaticPaths() {
+  return (await Promise.all(allLocales.map(async (lang) => {
+    const posts = await getPosts(lang)
+    const total = Math.ceil(posts.length / 9)
+    return Array.from({ length: Math.max(0, total - 1) }, (_, index) => ({
+      params: { lang: getLangRouteParam(lang), page: String(index + 2) },
+    }))
+  }))).flat()
+}
+const lang = getLangFromPath(Astro.url.pathname)
+---
+<PagedPostList {lang} page={Number(Astro.params.page)} />

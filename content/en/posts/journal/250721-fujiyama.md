@@ -1,4 +1,6 @@
 ---
+lang: 'en'
+slug: "mount-fuji"
 title: "Mount Fuji"
 date: 2025-07-21T10:00:00+08:00
 summary: "Returning to Yamanashi after nearly two years, the weather was so hot that even Mount Fuji had no snow cap"

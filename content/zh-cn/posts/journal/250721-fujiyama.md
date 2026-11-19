@@ -1,4 +1,7 @@
 ---
+lang: 'zh'
+slug: "mount-fuji"
+legacySlug: "富士山"
 title: "富士山"
 date: 2025-07-21T10:00:00+08:00
 summary: "时隔接近两年，再次来到山梨，天气很热，热到富士山都没有了雪顶"

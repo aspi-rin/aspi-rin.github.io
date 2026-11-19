@@ -1,0 +1,25 @@
+---
+import { defaultLocale } from '@/config'
+import { langMap } from '@/i18n/config'
+import { getLegacyRedirects } from '@/utils/legacy'
+
+export async function getStaticPaths() {
+  const redirects = await getLegacyRedirects()
+  return [...redirects].map(([old, url]) => ({ params: { old: old.slice(1, -1) }, props: { url } }))
+}
+
+const { url } = Astro.props
+---
+<!doctype html>
+<html lang={langMap[defaultLocale][0]}>
+  <head>
+    <meta charset="utf-8" />
+    <title>{url}</title>
+    <link rel="canonical" href={new URL(url, Astro.url).href} />
+    <meta http-equiv="refresh" content={`0;url=${encodeURI(url)}`} />
+    <script is:inline define:vars={{ url }}>
+      location.replace(url + location.search + location.hash)
+    </script>
+  </head>
+  <body><a href={url}>{url}</a></body>
+</html>
