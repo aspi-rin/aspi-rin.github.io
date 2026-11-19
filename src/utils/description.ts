@@ -65,6 +65,11 @@ function getExcerpt(text: string, lang: Language, scene: ExcerptScene): string {
   return excerpt
 }
 
+// An excerpt break keeps the rest of the article out of previews and feeds.
+export function getPostPreviewBody(body = ''): string {
+  return body.split('<!-- more -->', 1)[0]
+}
+
 // Generates post description from existing description or content
 export function getPostDescription(
   post: CollectionEntry<'posts'>,
@@ -79,7 +84,7 @@ export function getPostDescription(
       : post.data.description
   }
 
-  const rawContent = post.body || ''
+  const rawContent = getPostPreviewBody(post.body)
   const cleanContent = rawContent
     .replace(/<!--[\s\S]*?-->/g, '') // Remove HTML comments
     .replace(/```[\s\S]*?```/g, '') // Remove code blocks

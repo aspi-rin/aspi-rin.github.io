@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro'
 import { allLocales } from '@/config'
 import { getPostPath } from '@/i18n/path'
 import { getPosts } from '@/utils/content'
+import { getPostPreviewBody } from '@/utils/description'
 
 export const GET: APIRoute = async () => {
   const entries = (await Promise.all(allLocales.map(async (lang) => {
@@ -11,7 +12,7 @@ export const GET: APIRoute = async () => {
       title: post.data.title,
       summary: post.data.description,
       url: getPostPath(post.data.abbrlink || post.id, lang),
-      text: [post.data.title, post.data.description, ...post.data.categories, ...post.data.tags, post.body].join(' ').toLowerCase(),
+      text: [post.data.title, post.data.description, ...post.data.categories, ...post.data.tags, getPostPreviewBody(post.body)].join(' ').toLowerCase(),
     }))
   }))).flat()
   return Response.json(entries)

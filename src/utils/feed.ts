@@ -13,7 +13,7 @@ import { getLangFromPath, getLangRouteParam, getLanguagePrefix } from '@/i18n/la
 import { getLocalizedPath, getPostPath } from '@/i18n/path'
 import { ui } from '@/i18n/ui'
 import { memoize } from '@/utils/cache'
-import { getPostDescription } from '@/utils/description'
+import { getPostDescription, getPostPreviewBody } from '@/utils/description'
 import { getLegacyPostGuidPath, legacyLocales } from '@/utils/legacy'
 
 const markdownParser = new MarkdownIt()
@@ -177,11 +177,12 @@ export async function generateFeed({ lang, sourceLang }: { lang?: Language, sour
     const guid = new URL(getLegacyPostGuidPath(previous ?? post, identityLang), siteURL).href
 
     // Optimize content processing
-    const postContent = post.body
+    const body = getPostPreviewBody(post.body)
+    const postContent = body
       ? sanitizeHtml(
           await resolveFeedPaths(
             // Remove HTML comments before rendering markdown
-            markdownParser.render(post.body.replace(/<!--[\s\S]*?-->/g, '')),
+            markdownParser.render(body.replace(/<!--[\s\S]*?-->/g, '')),
             link,
           ),
           {
