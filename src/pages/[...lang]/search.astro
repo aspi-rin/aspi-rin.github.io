@@ -1,0 +1,99 @@
+---
+import { allLocales, base } from '@/config'
+import { blogLabels } from '@/i18n/blog'
+import { getLangFromPath, getLangRouteParam } from '@/i18n/lang'
+import Layout from '@/layouts/Layout.astro'
+
+export const getStaticPaths = () => allLocales.map(lang => ({ params: { lang: getLangRouteParam(lang) } }))
+const lang = getLangFromPath(Astro.url.pathname)
+const labels = blogLabels(lang)
+---
+<Layout>
+  <h2 class="mb-5 text-7 c-primary font-bold">{labels.search}</h2>
+  <div data-blog-search data-lang={lang} data-index={`${base}/api/search.json`} data-empty={labels.empty}>
+    <label class="sr-only" for="blog-search">{labels.search}</label>
+    <input
+      id="blog-search"
+      type="search"
+      autocomplete="off"
+      placeholder={labels.searchPlaceholder}
+      class="min-h-11 w-full border border-secondary/60 rounded bg-background px-3 py-2 c-primary placeholder:c-secondary focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 focus-visible:outline"
+    />
+    <p data-status role="status" class="mt-3 c-secondary"></p>
+    <ul data-results class="mt-5 space-y-5"></ul>
+  </div>
+</Layout>
+
+<style>
+#blog-search {
+  color-scheme: light;
+}
+
+:global(html.dark) #blog-search {
+  color-scheme: dark;
+}
+</style>
+
+<script>
+interface SearchEntry {
+  lang: string
+  title: string
+  summary: string
+  url: string
+  text: string
+}
+
+function initSearch() {
+  const panel = document.querySelector<HTMLElement>('[data-blog-search]')
+  if (!panel)
+    return
+  const input = panel.querySelector<HTMLInputElement>('input')!
+  const status = panel.querySelector<HTMLElement>('[data-status]')!
+  const list = panel.querySelector<HTMLElement>('[data-results]')!
+  let data: Promise<SearchEntry[]> | undefined
+  async function search() {
+    const query = input.value.trim().toLowerCase()
+    list.replaceChildren()
+    status.textContent = ''
+    if (!query)
+      return
+
+    data ??= fetch(panel!.dataset.index!).then((response) => {
+      if (!response.ok)
+        throw new Error(String(response.status))
+      return response.json()
+    })
+    try {
+      const terms = query.split(/\s+/)
+      const hits = (await data)
+        .filter(item => item.lang === panel!.dataset.lang && terms.every(term => item.text.includes(term)))
+        .sort((a, b) => Number(b.title.toLowerCase().includes(query)) - Number(a.title.toLowerCase().includes(query)))
+        .slice(0, 20)
+      if (input.value.trim().toLowerCase() !== query)
+        return
+      status.textContent = hits.length ? '' : panel!.dataset.empty!
+      list.replaceChildren(...hits.map((item) => {
+        const li = document.createElement('li')
+        const link = document.createElement('a')
+        const summary = document.createElement('p')
+        link.href = item.url
+        link.className = 'highlight-hover font-bold'
+        link.textContent = item.title
+        summary.textContent = item.summary
+        li.append(link, summary)
+        return li
+      }))
+    }
+    catch {
+      data = undefined
+      status.textContent = panel!.dataset.empty!
+    }
+  }
+  input.addEventListener('input', (event) => {
+    if (!(event as InputEvent).isComposing)
+      void search()
+  })
+  input.addEventListener('compositionend', () => void search())
+}
+document.addEventListener('astro:page-load', initSearch)
+</script>

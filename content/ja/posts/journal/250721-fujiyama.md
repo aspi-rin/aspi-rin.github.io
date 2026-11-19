@@ -1,4 +1,7 @@
 ---
+lang: 'ja'
+slug: "mount-fuji"
+legacySlug: "富士山"
 title: "富士山"
 date: 2025-07-21T10:00:00+08:00
 summary: "約2年ぶりに山梨を訪れました。とても暑い日で、富士山の雪化粧も見られませんでした"

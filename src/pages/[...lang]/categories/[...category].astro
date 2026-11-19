@@ -1,0 +1,57 @@
+---
+import type { Language } from '@/i18n/config'
+import PostList from '@/components/PostList.astro'
+import { allLocales } from '@/config'
+import { blogLabels } from '@/i18n/blog'
+import { getLangRouteParam } from '@/i18n/lang'
+import { getLocalizedPath } from '@/i18n/path'
+import Layout from '@/layouts/Layout.astro'
+import { getPosts } from '@/utils/content'
+import { taxonomySlug } from '@/utils/taxonomy'
+
+export async function getStaticPaths() {
+  return (await Promise.all(allLocales.map(async (lang) => {
+    const posts = await getPosts(lang)
+    const categories = [...new Set(posts.flatMap(post => post.data.categories))].sort()
+    return [undefined, ...categories].map(category => ({
+      params: { lang: getLangRouteParam(lang), category: category ? taxonomySlug(category) : undefined },
+      props: { lang, category, categories },
+    }))
+  }))).flat()
+}
+
+interface Props {
+  lang: Language
+  category?: string
+  categories: string[]
+}
+
+const { lang, category, categories } = Astro.props
+const title = blogLabels(lang).categories
+const posts = category
+  ? (await getPosts(lang)).filter(post => post.data.categories.includes(category))
+  : []
+const supportedLangs = category
+  ? (await Promise.all(allLocales.map(async (locale) => {
+      const available = await getPosts(locale)
+      return available.some(post => post.data.categories.some(term => taxonomySlug(term) === taxonomySlug(category)))
+        ? locale
+        : null
+    }))).filter(locale => locale !== null)
+  : allLocales
+---
+<Layout {supportedLangs}>
+  <h2 class="mb-5 text-7 font-bold c-primary">{category ?? title}</h2>
+  {category ? (
+    <>
+      <a class="mb-6 inline-block highlight-hover" href={getLocalizedPath('/categories/', lang)}>{title}</a>
+      <PostList {posts} {lang} />
+    </>
+  ) : (
+    <ul class="flex flex-wrap gap-x-5 gap-y-3">
+      {categories.map(term => <li>
+        <a class="highlight-hover" href={getLocalizedPath(`/categories/${taxonomySlug(term)}/`, lang)}>{term}</a>
+      </li>)}
+    </ul>
+  )}
+</Layout>

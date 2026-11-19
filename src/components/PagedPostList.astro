@@ -1,0 +1,32 @@
+---
+import type { Language } from '@/i18n/config'
+import PostList from '@/components/PostList.astro'
+import { getLocalizedPath } from '@/i18n/path'
+import { ui } from '@/i18n/ui'
+import Layout from '@/layouts/Layout.astro'
+import { getPosts } from '@/utils/content'
+
+interface Props {
+  lang: Language
+  page?: number
+}
+
+const { lang, page = 1 } = Astro.props
+const posts = await getPosts(lang)
+const pageSize = 9
+const total = Math.ceil(posts.length / pageSize)
+const entries = posts.slice((page - 1) * pageSize, page * pageSize)
+const pageLink = (index: number) => getLocalizedPath(index === 1 ? '/posts/' : `/posts/page/${index}/`, lang)
+---
+<Layout>
+  <h2 class="mb-8 text-7 font-bold c-primary">{ui[lang].posts}</h2>
+  <PostList posts={entries} {lang} />
+  {total > 1 && (
+    <nav class="mt-8 flex gap-4" aria-label={ui[lang].posts}>
+      {Array.from({ length: total }, (_, index) => (
+        <a href={pageLink(index + 1)} aria-current={page === index + 1 ? 'page' : undefined}
+          class:list={['highlight-hover', page === index + 1 && 'font-bold c-primary']}>{index + 1}</a>
+      ))}
+    </nav>
+  )}
+</Layout>

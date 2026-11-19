@@ -1,13 +1,14 @@
 ---
+lang: 'zh'
 title: "关于"
 layout: "about"
 # summary: "关于本站"
 date: 2024-01-01T00:00:00+08:00
 links:
-  - name: "Hugo 文档"
-    url: "https://gohugo.io/"
-    icon: "https://gohugo.io/favicon.ico"
-    description: "世界上最快的静态网站生成器"
+  - name: "Astro 文档"
+    url: "https://docs.astro.build/"
+    icon: "https://astro.build/favicon.ico"
+    description: "Astro 网页框架的官方文档"
   
   - name: "Tailwind CSS"
     url: "https://tailwindcss.com/"

@@ -1,0 +1,23 @@
+---
+import PostList from '@/components/PostList.astro'
+import { allLocales } from '@/config'
+import { blogLabels } from '@/i18n/blog'
+import { getLangFromPath, getLangRouteParam } from '@/i18n/lang'
+import Layout from '@/layouts/Layout.astro'
+import { getPostsByYear } from '@/utils/content'
+
+export const getStaticPaths = () => allLocales.map(lang => ({ params: { lang: getLangRouteParam(lang) } }))
+
+const lang = getLangFromPath(Astro.url.pathname)
+const labels = blogLabels(lang)
+const groups = await getPostsByYear(lang, true)
+---
+<Layout>
+  <h2 class="mb-5 text-7 c-primary font-bold">{labels.archives}</h2>
+  {Array.from(groups, ([year, posts]) => (
+    <section class="mb-8">
+      <h3 class="mb-3 text-5 c-primary font-bold">{year}</h3>
+      <PostList posts={posts} {lang} />
+    </section>
+  ))}
+</Layout>
