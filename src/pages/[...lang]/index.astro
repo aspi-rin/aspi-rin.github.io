@@ -3,7 +3,7 @@ import PostList from '@/components/PostList.astro'
 import { allLocales } from '@/config'
 import { getLangFromPath, getLangRouteParam } from '@/i18n/lang'
 import Layout from '@/layouts/Layout.astro'
-import { getPinnedPosts, getPostsByYear } from '@/utils/content'
+import { getPinnedPosts, getRegularPosts } from '@/utils/content'
 
 export async function getStaticPaths() {
   return allLocales.map(lang => ({ params: { lang: getLangRouteParam(lang) } }))
@@ -11,7 +11,7 @@ export async function getStaticPaths() {
 
 const currentLang = getLangFromPath(Astro.url.pathname)
 const pinnedPosts = await getPinnedPosts(currentLang)
-const postsByYear = await getPostsByYear(currentLang)
+const regularPosts = await getRegularPosts(currentLang)
 ---
 
 <Layout>
@@ -24,10 +24,10 @@ const postsByYear = await getPostsByYear(currentLang)
   )}
 
   <!-- Regular Posts -->
-  {Array.from(postsByYear.entries(), ([_year, posts]) => (
+  {regularPosts.length > 0 && (
     <section class="mb-7.5">
       <div class="uno-decorative-line" />
-      <PostList posts={posts} lang={currentLang} />
+      <PostList posts={regularPosts} lang={currentLang} />
     </section>
-  ))}
+  )}
 </Layout>
