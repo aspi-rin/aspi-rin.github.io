@@ -1,7 +1,7 @@
 ---
 lang: zh
 slug: vr-floating-mansion
-title: '早坂吝『VR浮遊館の謎』'
+title: 'VR 浮遊館の謎 - 早坂吝 (2024)'
 date: 2026-11-19T13:42:09+09:00
 description: 'AI 小说家 Force 设计了一款沉浸式推理游戏，邀请合尾辅和相以参加测试…'
 categories: ['推理小说']
