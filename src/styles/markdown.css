@@ -376,6 +376,7 @@ html.dark .heti :where(u) {
 }
 .image-viewer[open] {
   display: grid;
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
   place-items: center;
 }
 .image-viewer::backdrop {
@@ -395,6 +396,35 @@ html.dark .heti :where(u) {
   overflow: auto;
   text-align: center;
 }
+.image-viewer-viewport[data-actual-size] {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.image-viewer-viewport[data-actual-size] figure {
+  flex: none;
+  width: max-content;
+  margin: auto;
+}
+.image-viewer-viewport[data-actual-size] img {
+  display: block;
+  max-width: none;
+  max-height: none;
+  cursor: grab;
+  user-select: none;
+}
+.image-viewer-viewport[data-actual-size] img:active {
+  cursor: grabbing;
+}
+.image-viewer-viewport[data-actual-size] figcaption {
+  max-width: calc(100vw - 32px);
+}
+.image-viewer-viewport:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 2px;
+}
 .image-viewer button:not([hidden]) {
   --at-apply: 'absolute grid h-11 w-11 place-items-center rounded-full bg-black/65 text-white hover:bg-black/85 active:scale-96 disabled:opacity-35';
 }
@@ -402,9 +432,21 @@ html.dark .heti :where(u) {
   outline: 2px solid white;
   outline-offset: 2px;
 }
-.image-viewer-close {
+.image-viewer-close,
+.image-viewer-zoom {
   top: 1rem;
+}
+.image-viewer-close {
   right: 1rem;
+}
+.image-viewer-zoom {
+  right: 4.25rem;
+}
+.image-viewer-zoom[aria-pressed='true'] {
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 60%);
+}
+.image-viewer-zoom[aria-pressed='true'] .image-viewer-zoom-plus {
+  visibility: hidden;
 }
 .image-viewer-previous {
   top: 50%;

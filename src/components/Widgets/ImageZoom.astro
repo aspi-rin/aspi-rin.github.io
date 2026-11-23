@@ -65,15 +65,24 @@ if (body?.includes('image-trigger')) {
       <path d="m6 6 12 12M18 6 6 18" />
     </svg>
   </button>
+  <button class="image-viewer-zoom" type="button" data-zoom aria-label={labels.actualSize} title={labels.actualSize} aria-pressed="false" disabled>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+      <circle cx="10.5" cy="10.5" r="5.5" />
+      <path d="m14.5 14.5 4.5 4.5M8 10.5h5" />
+      <path class="image-viewer-zoom-plus" d="M10.5 8v5" />
+    </svg>
+  </button>
   <button class="image-viewer-previous" type="button" data-previous aria-label={labels.previous}>
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
       <path d="m15 6-6 6 6 6" />
     </svg>
   </button>
-  <figure>
-    <img alt="" />
-    <figcaption hidden></figcaption>
-  </figure>
+  <div class="image-viewer-viewport" role="region" aria-label={labels.image} tabindex="-1">
+    <figure>
+      <img alt="" draggable="false" />
+      <figcaption hidden></figcaption>
+    </figure>
+  </div>
   <button class="image-viewer-next" type="button" data-next aria-label={labels.next}>
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
       <path d="m9 6 6 6-6 6" />
@@ -90,17 +99,45 @@ function setupImages() {
     return
   const image = dialog.querySelector('img')!
   const caption = dialog.querySelector('figcaption')!
+  const viewport = dialog.querySelector<HTMLElement>('.image-viewer-viewport')!
+  const zoom = dialog.querySelector<HTMLButtonElement>('[data-zoom]')!
   const previous = dialog.querySelector<HTMLButtonElement>('[data-previous]')!
   const next = dialog.querySelector<HTMLButtonElement>('[data-next]')!
+  const panSteps = new Map<string, [number, number]>([
+    ['ArrowLeft', [-48, 0]],
+    ['ArrowRight', [48, 0]],
+    ['ArrowUp', [0, -48]],
+    ['ArrowDown', [0, 48]],
+  ])
   let images: HTMLImageElement[] = []
   let index = 0
+  let dragStart: { x: number, y: number, left: number, top: number } | undefined
+
+  function setActualSize(enabled: boolean) {
+    viewport.toggleAttribute('data-actual-size', enabled)
+    viewport.tabIndex = enabled ? 0 : -1
+    zoom.setAttribute('aria-pressed', String(enabled))
+    if (enabled) {
+      viewport.scrollLeft = (image.offsetWidth - viewport.clientWidth) / 2
+      viewport.scrollTop = (image.offsetHeight - viewport.clientHeight) / 2
+    }
+    else {
+      viewport.scrollTo(0, 0)
+    }
+  }
+
+  function updateZoomAvailability() {
+    zoom.disabled = !image.complete || !image.naturalWidth
+  }
 
   function showImage(targetIndex: number) {
     if (targetIndex < 0 || targetIndex >= images.length)
       return
+    setActualSize(false)
     index = targetIndex
     const source = images[index]
-    image.src = source.currentSrc || source.src
+    image.src = source.closest<HTMLAnchorElement>('a.image-trigger[href]')?.href || source.currentSrc || source.src
+    updateZoomAvailability()
     image.alt = source.alt
     const description = source.closest('figure')?.querySelector('figcaption')?.textContent ?? ''
     caption.textContent = description
@@ -116,11 +153,44 @@ function setupImages() {
     }
   })
   dialog.addEventListener('keydown', (event) => {
+    if (event.target === viewport && viewport.hasAttribute('data-actual-size')) {
+      const step = panSteps.get(event.key)
+      if (step) {
+        event.preventDefault()
+        viewport.scrollBy(...step)
+      }
+      return
+    }
     if (event.key === 'ArrowLeft')
       showImage(index - 1)
     if (event.key === 'ArrowRight')
       showImage(index + 1)
   })
+  image.addEventListener('load', updateZoomAvailability)
+  image.addEventListener('error', updateZoomAvailability)
+  zoom.addEventListener('click', () => setActualSize(!viewport.hasAttribute('data-actual-size')))
+
+  image.addEventListener('pointerdown', (event) => {
+    if (event.pointerType !== 'mouse' || event.button !== 0 || !viewport.hasAttribute('data-actual-size'))
+      return
+    image.setPointerCapture(event.pointerId)
+    dragStart = {
+      x: event.clientX,
+      y: event.clientY,
+      left: viewport.scrollLeft,
+      top: viewport.scrollTop,
+    }
+  })
+  image.addEventListener('pointermove', (event) => {
+    if (!dragStart || !image.hasPointerCapture(event.pointerId))
+      return
+    viewport.scrollLeft = dragStart.left + dragStart.x - event.clientX
+    viewport.scrollTop = dragStart.top + dragStart.y - event.clientY
+  })
+  image.addEventListener('lostpointercapture', () => {
+    dragStart = undefined
+  })
+
   previous.addEventListener('click', () => showImage(index - 1))
   next.addEventListener('click', () => showImage(index + 1))
 
