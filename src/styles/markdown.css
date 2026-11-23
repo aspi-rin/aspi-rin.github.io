@@ -9,6 +9,11 @@
   --at-apply: 'break-words leading-normal hyphens-auto cjk:tracking-wide';
 }
 
+/* Post prose keeps separate typography from the code blocks, dividers, and metadata. */
+#post-content > :not(pre, .code-block-wrapper, hr, .uno-decorative-line, #post-copyright, .no-heti, .giscus) {
+  --at-apply: 'font-wenkai';
+}
+
 /* Customized Post Title */
 .heti .post-title {
   --at-apply: 'mb-2 mt-0 text-8.5 font-bold lg:text-9';

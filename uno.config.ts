@@ -10,6 +10,7 @@ import presetTheme from 'unocss-preset-theme'
 import { themeConfig } from './src/config.ts'
 
 const { light, dark } = themeConfig.color
+const sansFonts = ['"LXGW 975 HazyGo SC 500W"', 'ui-sans-serif', 'system-ui', 'sans-serif']
 
 export default defineConfig({
   presets: [
@@ -40,6 +41,8 @@ export default defineConfig({
       caution: 'oklch(50.5% 0.213 27.518 / 0.8)', // red-700
     },
     fontFamily: {
+      sans: sansFonts,
+      wenkai: ['"LXGW WenKai"', ...sansFonts],
       title: ['Snell-Black', 'EarlySummer-Subset', 'EarlySummer', 'ui-serif', 'Georgia', 'Cambria', 'Times New Roman', 'Times', 'serif'],
       navbar: ['STIX-Italic', 'EarlySummer-Subset', 'EarlySummer', 'ui-serif', 'Georgia', 'Cambria', 'Times New Roman', 'Times', 'serif'],
       time: ['Snell-Bold', 'ui-serif', 'Georgia', 'Cambria', 'Times New Roman', 'Times', 'serif'],
