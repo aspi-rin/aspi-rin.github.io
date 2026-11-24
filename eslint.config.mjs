@@ -6,6 +6,7 @@ export default antfu({
   unocss: true,
   ignores: ['src/content/**'],
   rules: {
+    'antfu/reasonable-newline': 'off',
     'e18e/prefer-static-regex': 'off',
   },
 })
